@@ -34,7 +34,7 @@ const CONFIG = {
   // ---------------------------------------------------------------
   screen2: {
     message:
-      "Our journey began at school, very dramatically. But it never had to end there, and here we are running 4 years strong, celebrating your 3rd birthday together",
+      "Our journey began at school, very dramatically. But it never had to end there, and here we are running 4 years strong, celebrating your 3rd birthday together.",
     buttonText: "HuiHui ♡",
   },
 
@@ -66,29 +66,34 @@ const CONFIG = {
   memories: [
     { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)" },
     { image: "images/image2.jpg", caption: "The computer lab coincidence. I can never get tired talking about it. Just like in a rom-com, you were there beside me while my heart thumped tirelessly." },
-    { image: "images/image3.jpg", caption: "The chemistry lab incident. I swear I could not be more stunned by such a mischievous alignment of spontaneity. I was soooo nervous" },
-    { image: "images/image4.jpg", caption: "write your 4th caption here" },
-    { image: "images/image5.jpg", caption: "write your 5th caption here" },
-    { image: "images/image6.jpg", caption: "write your 6th caption here" },
-    { image: "images/image7.jpg", caption: "write your 7th caption here" },
-    { image: "images/image8.jpg", caption: "write your 8th caption here" },
-    { image: "images/image9.jpg", caption: "write your 9th caption here" },
-    { image: "images/image10.jpg", caption: "write your 10th caption here" },
+    { image: "images/image3.jpg", caption: "The chemistry lab incident. I swear I could not be more stunned by such a mischievous alignment of spontaneity. I was soooo nervous!!!" },
+    { image: "images/image4.jpg", caption: "The day we played badminton for the first and last time. Remember how you stood there admiring for a minute? I was blushing thatt whole week ♡" },
+    { image: "images/image5.jpg", caption: "Our last day at school. I remember you adoring me uss din bhi, under the sunlight, checking if I was okay. I watched you go in your van, the last time." },
+    { image: "images/image6.jpg", caption: "We were soo worried about what next. But destiny had many more moments for us to live together, years planned to grow our love stronger." },
+    { image: "images/image7.jpg", caption: "Long meets, night calls, sweet texts. We've truly experienced more than we ever imagined." },
+    { image: "images/image8.jpg", caption: "Checked in boxes, we only thought could be made true dreams. Kiss, Hugs, Gifts, Love ♡" },
+    { image: "images/image9.jpg", caption: "But this isn't about us. Today is about YOU! All these memories are here to emphasize how much value you have added to all these years of mine. How much love you've showered on me to become the girl I am today. Your girl. Your lady. Your woman." },
+    { image: "images/image10.jpg", caption: "Destiny had the best for us when we thought it couldn't get any better. I want us to keep believing in it, in our love. My love for you can't be measured into this simple website but it should be evident enough how special this day is for me. The day my man came into this world." },
     // { image: "images/image5.jpg", caption: "add more like this" },
   ],
 
+ screen6: {
+    message: "I'm always here whenever you'll need me. Regardless of if I am fighting you (khikhi). May this year and the upcoming ones, bring all the success, love, joy and comfort they can for you. May you always be the happiest, healthiest and the most loved person in this world. I love you a lotttttt Jahan! ♡",
+    buttonText: "♡",
+  },
+
   // ---------------------------------------------------------------
-  // SCREEN 6 — Birthday Cake
+  // SCREEN 7 — Birthday Cake
   // ---------------------------------------------------------------
   cake: {
-    message: "xyz",
+    message: "Since I can't be there to celebrate with you, I made this cake for you. I hope you like it! Blow the candles and make a wish, my love. ♡",
     hint: "tap the cake ♡",
     celebrationMessage: "Happy Birthday, my love! ♡",
     continueButtonText: "continue ♡",
   },
 
   // ---------------------------------------------------------------
-  // SCREEN 6 — Final Ending
+  // SCREEN 7 — Final Ending
   // ---------------------------------------------------------------
   ending: {
     message: "I love you.",
