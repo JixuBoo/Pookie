@@ -25,8 +25,8 @@ const CONFIG = {
   // SCREEN 1 — Opening
   // ---------------------------------------------------------------
   screen1: {
-    message: "Hey Baby! Happy Birthday. Here's a small gift from me.",
-    buttonText: "show me ♡",
+    message: "Hey Baby! Happy Birthday 🍰♡ ༘*.ﾟ🧸🎀. In an attempt to show you how much you mean to me, here's a small gift for my birthday boy.",
+    buttonText: "show meeeee ♡",
   },
 
   // ---------------------------------------------------------------
@@ -34,20 +34,28 @@ const CONFIG = {
   // ---------------------------------------------------------------
   screen2: {
     message:
-      "Our journey began at school, very dramatically. But it never had to end there, and here we are with our cheerful, lovely, beautiful 4 years and 4th birthday celebrating together.",
+      "Our journey began at school, very dramatically. But it never had to end there, and here we are running 4 years strong, celebrating your 3rd birthday together",
+    buttonText: "HuiHui ♡",
+  },
+
+  // ---------------------------------------------------------------
+  // SCREEN 3 — The Love we Have
+  // ---------------------------------------------------------------
+  screen3: {
+    message: "I don't know if I express it enough, but you're the bestest person I've ever met in my life. A hardworking, loving, sweet, cute, responsible and mature man, who's always been there for me when I needed him, loved me the best he could, chased the moon for me giving me stars. You taught me love, you taught me patience, you taught me to be a better person. I love you a lott Jahan!♡",
     buttonText: "I love you ♡",
   },
 
   // ---------------------------------------------------------------
-  // SCREEN 3 — Before the Memories
+  // SCREEN 4 — Before the Memories
   // ---------------------------------------------------------------
-  screen3: {
-    message: "I hope you like this. I love you.",
+  screen4: {
+    message: "I hope you like this chotu sa gift of mine. I put in the best of my efforts into this, even a smile would fulfill it's purpose. Picture the moments as you go by, treat this as a pre-anniversary gift too!",
     buttonText: "I'm excited, let's goo ♡",
   },
 
   // ---------------------------------------------------------------
-  // SCREEN 4 — Photo Memories
+  // SCREEN 5 — Photo Memories
   // Add as many photos as you like! Just copy one of the lines
   // below (the part between the { and }) and change the image file
   // name and caption. The site will automatically handle any number
@@ -57,8 +65,8 @@ const CONFIG = {
   // ---------------------------------------------------------------
   memories: [
     { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)" },
-    { image: "images/image2.jpg", caption: "def" },
-    { image: "images/image3.jpg", caption: "write your 3rd caption here" },
+    { image: "images/image2.jpg", caption: "The computer lab coincidence. I can never get tired talking about it. Just like in a rom-com, you were there beside me while my heart thumped tirelessly." },
+    { image: "images/image3.jpg", caption: "The chemistry lab incident. I swear I could not be more stunned by such a mischievous alignment of spontaneity. I was soooo nervous" },
     { image: "images/image4.jpg", caption: "write your 4th caption here" },
     { image: "images/image5.jpg", caption: "write your 5th caption here" },
     { image: "images/image6.jpg", caption: "write your 6th caption here" },
@@ -70,7 +78,7 @@ const CONFIG = {
   ],
 
   // ---------------------------------------------------------------
-  // SCREEN 5 — Birthday Cake
+  // SCREEN 6 — Birthday Cake
   // ---------------------------------------------------------------
   cake: {
     message: "xyz",
