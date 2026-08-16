@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>For You, Baby ♡</title>
+
+<!-- Two romantic fonts from Google Fonts:
+     - "Parisienne"          -> the dreamy handwritten font used for special lines
+     - "Cormorant Garamond"  -> the elegant font used for normal captions & body text -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ================================================================
+       This canvas draws the soft floating stars/hearts you see behind
+       every screen. You do not need to touch this. It is controlled
+       entirely from script.js.
+  ================================================================= -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- ================================================================
+       AUDIO PLAYERS
+       Put your three songs inside the "audio" folder and name them
+       exactly: song1.mp3, song2.mp3, song3.mp3
+       (You can change the file names here if you'd rather use your
+       own names — just also update CONFIG.audio in script.js)
+  ================================================================= -->
+  <audio id="audio-song1" src="audio/song1.mp3" preload="auto" loop></audio>
+  <audio id="audio-song2" src="audio/song2.mp3" preload="auto" loop></audio>
+  <audio id="audio-song3" src="audio/song3.mp3" preload="auto" loop></audio>
+
+  <main id="app">
+
+    <!-- ============================ SCREEN 1 — Opening ============================ -->
+    <section class="screen is-active" id="screen-opening">
+      <div class="screen-inner">
+        <p class="reveal-text message-text" id="text-opening"></p>
+        <button class="glow-button" id="btn-opening" type="button">show me ♡</button>
+      </div>
+    </section>
+
+    <!-- ============================ SCREEN 2 — Our Beginning ============================ -->
+    <section class="screen" id="screen-beginning">
+      <div class="screen-inner">
+        <p class="reveal-text message-text" id="text-beginning"></p>
+        <button class="glow-button" id="btn-beginning" type="button">I love you ♡</button>
+      </div>
+    </section>
+
+    <!-- ============================ SCREEN 3 — Before the Memories ============================ -->
+    <section class="screen" id="screen-before-memories">
+      <div class="screen-inner">
+        <p class="reveal-text dreamy-line" id="text-before-memories"></p>
+        <button class="glow-button" id="btn-before-memories" type="button">I'm excited, let's goo ♡</button>
+      </div>
+    </section>
+
+    <!-- ============================ SCREEN 4 — Our Journey / Photo Memories ============================ -->
+    <section class="screen" id="screen-memories">
+      <div class="memories-inner">
+        <div class="memory-photo-wrap">
+          <img class="memory-photo" id="memory-photo" src="" alt="A memory of us" />
+          <div class="memory-photo-fallback" id="memory-photo-fallback">
+            <span>♡</span>
+            <p>add your photo here</p>
+          </div>
+        </div>
+        <div class="memory-caption-wrap">
+          <p class="dreamy-line memory-caption" id="memory-caption"></p>
+          <p class="memory-count" id="memory-count"></p>
+        </div>
+      </div>
+      <button class="heart-next-button" id="btn-next-memory" type="button" aria-label="Next memory">♡</button>
+    </section>
+
+    <!-- ============================ SCREEN 5 — Birthday Cake ============================ -->
+    <section class="screen" id="screen-cake">
+      <div class="screen-inner">
+        <p class="reveal-text message-text" id="text-cake"></p>
+
+        <!-- A simple, cute CSS-built cake. Tap it to blow out the candles. -->
+        <button class="cake-button" id="btn-cake" type="button" aria-label="Tap the cake">
+          <div class="cake">
+            <div class="candle candle-1"><span class="flame"></span></div>
+            <div class="candle candle-2"><span class="flame"></span></div>
+            <div class="candle candle-3"><span class="flame"></span></div>
+            <div class="cake-top"></div>
+            <div class="cake-icing"></div>
+            <div class="cake-layer"></div>
+          </div>
+          <span class="cake-hint" id="cake-hint">tap the cake ♡</span>
+        </button>
+
+        <p class="reveal-text dreamy-line" id="text-celebration"></p>
+        <button class="glow-button" id="btn-cake-continue" type="button">continue ♡</button>
+      </div>
+
+      <!-- Confetti pieces are added here automatically by script.js -->
+      <div class="confetti-layer" id="confetti-layer"></div>
+    </section>
+
+    <!-- ============================ SCREEN 6 — Final Ending ============================ -->
+    <section class="screen" id="screen-ending">
+      <div class="screen-inner">
+        <p class="dreamy-line final-line" id="text-ending"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
