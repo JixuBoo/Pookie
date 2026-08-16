@@ -56,7 +56,7 @@ const CONFIG = {
   // Put your photo files inside the "images" folder.
   // ---------------------------------------------------------------
   memories: [
-    { image: "images/image1.jpg", caption: "abc" },
+    { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)" },
     { image: "images/image2.jpg", caption: "def" },
     { image: "images/image3.jpg", caption: "write your 3rd caption here" },
     { image: "images/image4.jpg", caption: "write your 4th caption here" },
@@ -179,7 +179,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // .play() can be rejected by the browser if the file is missing
     // or not yet added — we quietly ignore that so the story still
     // continues even before you've added your songs.
-    audioEl.play().catch(() => {});
+    const playPromise = audioEl.play();
+    
+    if (playPromise !== undefined) {
+      playPromise
+        .catch((error) => {
+          // Autoplay policy violation or other error
+          // Still fade in case it somehow starts later
+          if (error.name !== 'NotAllowedError') {
+            console.error("Audio playback error:", error);
+          }
+        });
+    }
+    
     fadeAudio(audioEl, volume, 1200);
   }
 
