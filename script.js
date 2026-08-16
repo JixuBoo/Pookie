@@ -60,6 +60,12 @@ const CONFIG = {
     { image: "images/image2.jpg", caption: "def" },
     { image: "images/image3.jpg", caption: "write your 3rd caption here" },
     { image: "images/image4.jpg", caption: "write your 4th caption here" },
+    { image: "images/image5.jpg", caption: "write your 5th caption here" },
+    { image: "images/image6.jpg", caption: "write your 6th caption here" },
+    { image: "images/image7.jpg", caption: "write your 7th caption here" },
+    { image: "images/image8.jpg", caption: "write your 8th caption here" },
+    { image: "images/image9.jpg", caption: "write your 9th caption here" },
+    { image: "images/image10.jpg", caption: "write your 10th caption here" },
     // { image: "images/image5.jpg", caption: "add more like this" },
   ],
 
