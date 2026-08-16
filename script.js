@@ -89,7 +89,7 @@ const CONFIG = {
     message: "Since I can't be there to celebrate with you, I made this cake for you. I hope you like it! Blow the candles and make a wish, my love. ♡",
     hint: "tap the cake ♡",
     celebrationMessage: "Happy Birthday, my love! ♡",
-    continueButtonText: "continue ♡",
+    continueButtonText: "Next? ♡",
   },
 
   // ---------------------------------------------------------------
