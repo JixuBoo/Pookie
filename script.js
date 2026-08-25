@@ -171,6 +171,64 @@ document.addEventListener("DOMContentLoaded", () => {
     song2: document.getElementById("audio-song2"),
     song3: document.getElementById("audio-song3"),
   };
+  const muteToggle = document.getElementById("mute-toggle");
+  const audioTargetVolumes = new Map();
+  const muteFadeTimers = new Map();
+  const muteFadeDuration = 350;
+  let isMuted = false;
+  let muteTransitionActive = false;
+
+  function setAudioVolume(audioEl, volume) {
+    audioEl.muted = isMuted && !muteTransitionActive;
+    audioEl.volume = isMuted && !muteTransitionActive ? 0 : volume;
+  }
+
+  function fadeMuteState() {
+    muteTransitionActive = true;
+    Object.values(audioEls).forEach((audioEl) => {
+      if (!audioEl) return;
+      clearInterval(muteFadeTimers.get(audioEl));
+
+      const startVolume = audioEl.volume;
+      const targetVolume = isMuted ? 0 : audioTargetVolumes.get(audioEl) ?? 0.7;
+      const startTime = performance.now();
+      audioEl.muted = false;
+
+      const timer = setInterval(() => {
+        const progress = Math.min(1, (performance.now() - startTime) / muteFadeDuration);
+        audioEl.volume = startVolume + (targetVolume - startVolume) * progress;
+
+        if (progress >= 1) {
+          clearInterval(timer);
+          muteFadeTimers.delete(audioEl);
+          if (isMuted) audioEl.muted = true;
+        }
+      }, 16);
+      muteFadeTimers.set(audioEl, timer);
+    });
+
+    setTimeout(() => {
+      muteTransitionActive = false;
+      Object.values(audioEls).forEach((audioEl) => {
+        if (!audioEl) return;
+        setAudioVolume(audioEl, audioTargetVolumes.get(audioEl) ?? 0.7);
+      });
+    }, muteFadeDuration + 20);
+  }
+
+  function updateMuteToggle() {
+    muteToggle.classList.toggle("is-muted", isMuted);
+    muteToggle.textContent = isMuted ? "♡" : "♥";
+    muteToggle.setAttribute("aria-label", isMuted ? "Unmute music" : "Mute music");
+    muteToggle.setAttribute("aria-pressed", String(isMuted));
+  }
+
+  muteToggle.addEventListener("click", () => {
+    isMuted = !isMuted;
+    updateMuteToggle();
+    fadeMuteState();
+  });
+  updateMuteToggle();
 
   Object.entries(audioEls).forEach(([song, audioEl]) => {
     if (!audioEl) return;
@@ -285,6 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function fadeAudio(audioEl, targetVolume, durationMs = 900, thenStop = false) {
     if (!audioEl) return Promise.resolve();
+    audioTargetVolumes.set(audioEl, targetVolume);
     const startVolume = audioEl.volume;
     const steps = 30;
     const stepTime = durationMs / steps;
@@ -294,10 +353,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const timer = setInterval(() => {
         step++;
         const progress = step / steps;
-        audioEl.volume = startVolume + (targetVolume - startVolume) * progress;
+        setAudioVolume(audioEl, startVolume + (targetVolume - startVolume) * progress);
         if (step >= steps) {
           clearInterval(timer);
-          audioEl.volume = targetVolume;
+          setAudioVolume(audioEl, targetVolume);
           if (thenStop) {
             audioEl.pause();
             audioEl.currentTime = 0;
@@ -310,7 +369,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function playAudio(audioEl, volume = 0.7) {
     if (!audioEl) return;
-    audioEl.volume = 0;
+    audioTargetVolumes.set(audioEl, volume);
+    setAudioVolume(audioEl, 0);
     // .play() can be rejected by the browser if the file is missing
     // or not yet added — we quietly ignore that so the story still
     // continues even before you've added your songs.

@@ -96,6 +96,45 @@ body {
   box-shadow: 0 0 9px rgba(232, 173, 182, 0.42);
 }
 
+.mute-toggle {
+  position: fixed;
+  z-index: 1000;
+  top: max(1rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  pointer-events: auto;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid rgba(185, 167, 168, 0.32);
+  border-radius: 50%;
+  color: var(--rose);
+  background: rgba(7, 5, 10, 0.42);
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.78;
+  backdrop-filter: blur(8px);
+  transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease, opacity 0.3s ease;
+}
+
+.mute-toggle.is-muted {
+  color: var(--muted);
+  opacity: 0.62;
+}
+
+.mute-toggle:hover,
+.mute-toggle:focus-visible {
+  color: var(--ivory);
+  border-color: rgba(245, 236, 223, 0.55);
+  background: rgba(7, 5, 10, 0.7);
+  opacity: 1;
+  outline: none;
+}
+
 /* Floating stars / hearts canvas sits behind everything */
 #particle-canvas {
   position: fixed;
