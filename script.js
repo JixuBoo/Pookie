@@ -18,7 +18,7 @@ const CONFIG = {
   audio: {
     song1: "audio/song1.mp3", // plays on Screen 1 ("show me ♡")
     song2: "audio/song2.mp3", // plays during the photo memories
-    song3: "audio/song3.mp3", // plays after the cake / candles
+    song3: "audio/song3.wav", // plays on the final "I love you" screen
   },
 
   // ---------------------------------------------------------------
@@ -387,7 +387,6 @@ document.addEventListener("DOMContentLoaded", () => {
     cakeEl.classList.add("is-blown");
     btnCake.classList.add("is-blown");
     spawnConfetti();
-    playAudio(audioEls.song3, 0.7);
 
     setTimeout(() => {
       textCelebration.classList.add("is-visible");
@@ -396,10 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }, 700);
   });
-
   btnCakeContinue.addEventListener("click", () => {
-    // Let the celebration song continue softly rather than cutting it off.
-    fadeAudio(audioEls.song3, 0.35, 1500);
     goToScreen("screen-ending");
     startScreen6();
   });
@@ -414,6 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (screen6Started) return;
     screen6Started = true;
     textEnding.textContent = CONFIG.ending.message;
+    playAudio(audioEls.song3, 0.7);
     requestAnimationFrame(() => {
       textEnding.classList.add("is-visible");
     });
