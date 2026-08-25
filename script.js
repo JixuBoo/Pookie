@@ -64,8 +64,8 @@ const CONFIG = {
   // Put your photo files inside the "images" folder.
   // ---------------------------------------------------------------
   memories: [
-    { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)" },
-    { image: "images/image2.jpg", caption: "The computer lab coincidence. I can never get tired talking about it. Just like in a rom-com, you were there beside me while my heart thumped tirelessly." },
+    { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)", polaroidNote: "the beginning" },
+    { image: "images/image2.jpg", caption: "The computer lab coincidence. I can never get tired talking about it. Just like in a rom-com, you were there beside me while my heart thumped tirelessly.", polaroidNote: "a little coincidence" },
     { image: "images/image3.jpg", caption: "The chemistry lab incident. I swear I could not be more stunned by such a mischievous alignment of spontaneity. I was soooo nervous!!!" },
     { image: "images/image4.jpg", caption: "The day we played badminton for the first and last time. Remember how you stood there admiring for a minute? I was blushing thatt whole week ♡" },
     { image: "images/image5.jpg", caption: "Our last day at school. I remember you adoring me uss din bhi, under the sunlight, checking if I was okay. I watched you go in your van, the last time." },
@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const memoryPhotoWrap = document.querySelector(".memory-photo-wrap");
   const memoryPhoto = document.getElementById("memory-photo");
   const memoryPhotoFallback = document.getElementById("memory-photo-fallback");
+  const memoryPolaroidNote = document.getElementById("memory-polaroid-note");
   const memoryCaption = document.getElementById("memory-caption");
   const memoryCount = document.getElementById("memory-count");
   const btnNextMemory = document.getElementById("btn-next-memory");
@@ -426,19 +427,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Reset animation state so it can fade in again cleanly.
     resetPhotoTilt();
-    memoryPhoto.classList.remove("is-visible");
+    memoryPhotoWrap.classList.remove("is-visible");
     memoryCaption.classList.remove("is-visible");
     memoryPhotoWrap.classList.remove("show-fallback");
+
+    // Keep each polaroid between -3 and 3 degrees, alternating the
+    // direction so consecutive photos do not all lean the same way.
+    const rotationMagnitude = 1 + Math.random() * 2;
+    const rotation = (index % 2 === 0 ? 1 : -1) * rotationMagnitude;
+    const rotationRadians = rotation * Math.PI / 180;
+    memoryPhotoWrap.style.setProperty("--polaroid-rotation", `${rotation}deg`);
+    memoryPhotoWrap.style.setProperty(
+      "--polaroid-shadow",
+      `${Math.sin(rotationRadians) * 7}px 14px 30px rgba(0, 0, 0, 0.44)`
+    );
 
     // Small delay lets the "old" image finish disappearing first,
     // so photos never overlap.
     setTimeout(() => {
       memoryPhoto.src = memory.image;
       memoryCaption.textContent = memory.caption;
+      memoryPolaroidNote.textContent = memory.polaroidNote || "";
       memoryCount.textContent = `${index + 1} / ${CONFIG.memories.length}`;
 
       requestAnimationFrame(() => {
-        memoryPhoto.classList.add("is-visible");
+        memoryPhotoWrap.classList.add("is-visible");
         memoryCaption.classList.add("is-visible");
       });
     }, 350);
