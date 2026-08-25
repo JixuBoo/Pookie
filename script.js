@@ -93,7 +93,7 @@ const CONFIG = {
   },
 
   // ---------------------------------------------------------------
-  // SCREEN 7 — Final Ending
+  // SCREEN 8 — Final Ending
   // ---------------------------------------------------------------
   ending: {
     message: "I love you.",
@@ -280,6 +280,28 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btnBeforeMemories.addEventListener("click", () => {
+    goToScreen("screen-gift");
+    startScreen4();
+  });
+
+  /* ================================================================
+     SCREEN 4 — Before the Memories
+  ================================================================= */
+  const textGift = document.getElementById("text-gift");
+  const btnGift = document.getElementById("btn-gift");
+  let screen4Started = false;
+
+  btnGift.textContent = CONFIG.screen4.buttonText;
+
+  function startScreen4() {
+    if (screen4Started) return;
+    screen4Started = true;
+    revealText(textGift, CONFIG.screen4.message, () => {
+      btnGift.classList.add("is-visible");
+    });
+  }
+
+  btnGift.addEventListener("click", () => {
     stopAudio(audioEls.song1);
     goToScreen("screen-memories");
     playAudio(audioEls.song2, 0.7);
@@ -288,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ================================================================
-     SCREEN 4 — Photo Memories
+    SCREEN 5 — Photo Memories
   ================================================================= */
   const memoryPhotoWrap = document.querySelector(".memory-photo-wrap");
   const memoryPhoto = document.getElementById("memory-photo");
@@ -487,13 +509,35 @@ document.addEventListener("DOMContentLoaded", () => {
       // Final photo reached — a slightly slower, more emotional transition.
       stopAudio(audioEls.song2);
       stopMemorySpotlight();
-      goToScreen("screen-cake", { slow: true });
-      startScreen5();
+      goToScreen("screen-always-here", { slow: true });
+      startScreen6();
     }
   });
 
   /* ================================================================
-     SCREEN 5 — Birthday Cake
+     SCREEN 6 — A Little More For You
+  ================================================================= */
+  const textAlwaysHere = document.getElementById("text-always-here");
+  const btnAlwaysHere = document.getElementById("btn-always-here");
+  let screen6Started = false;
+
+  btnAlwaysHere.textContent = CONFIG.screen6.buttonText;
+
+  function startScreen6() {
+    if (screen6Started) return;
+    screen6Started = true;
+    revealText(textAlwaysHere, CONFIG.screen6.message, () => {
+      btnAlwaysHere.classList.add("is-visible");
+    });
+  }
+
+  btnAlwaysHere.addEventListener("click", () => {
+    goToScreen("screen-cake", { slow: true });
+    startScreen5();
+  });
+
+  /* ================================================================
+     SCREEN 7 — Birthday Cake
   ================================================================= */
   const textCake = document.getElementById("text-cake");
   const btnCake = document.getElementById("btn-cake");
@@ -553,15 +597,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   btnCakeContinue.addEventListener("click", () => {
     goToScreen("screen-ending");
-    startScreen6();
+    startEnding();
   });
 
   /* ================================================================
-     SCREEN 6 — Final Ending
+     SCREEN 8 — Final Ending
   ================================================================= */
   const textEnding = document.getElementById("text-ending");
   const endingReplay = document.getElementById("ending-replay");
-  let screen6Started = false;
+  let endingStarted = false;
   let endingReplayTimeout = null;
   const finalLineFadeMs = 2400;
   const endingStillnessMs = 4500;
@@ -582,8 +626,10 @@ document.addEventListener("DOMContentLoaded", () => {
     currentMemoryIndex = 0;
     screen2Started = false;
     screen3Started = false;
-    screen5Started = false;
+    screen4Started = false;
     screen6Started = false;
+    screen5Started = false;
+    endingStarted = false;
     cakeClicked = false;
 
     cakeEl.classList.remove("is-blown");
@@ -622,9 +668,9 @@ document.addEventListener("DOMContentLoaded", () => {
     goToScreen("screen-opening", { slow: true });
   });
 
-  function startScreen6() {
-    if (screen6Started) return;
-    screen6Started = true;
+  function startEnding() {
+    if (endingStarted) return;
+    endingStarted = true;
     textEnding.textContent = CONFIG.ending.message;
     endingReplay.classList.remove("is-visible");
     playAudio(audioEls.song3, 0.7);
