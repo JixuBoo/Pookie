@@ -11,6 +11,17 @@
 const CONFIG = {
 
   // ---------------------------------------------------------------
+  // OPTIONAL LOCK SCREEN
+  // Set enabled to false whenever you want to skip Screen 0.
+  // ---------------------------------------------------------------
+  lock: {
+    enabled: true,
+    passcode: "261223",
+    prompt: "Enter our special date ♡",
+    incorrectMessage: "Buddhu!! Did you forget our anniversary?",
+  },
+
+  // ---------------------------------------------------------------
   // SONGS
   // Put your 3 songs inside the "audio" folder using these exact
   // file names, OR change the names below to match your own files.
@@ -109,6 +120,11 @@ const CONFIG = {
    ===================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  const lockForm = document.getElementById("lock-form");
+  const lockPrompt = document.getElementById("lock-prompt");
+  const lockInput = document.getElementById("lock-passcode");
+  const lockMessage = document.getElementById("lock-message");
 
   /* --------------------------------------------------------------
      TEXT REVEAL HELPER
@@ -261,6 +277,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   updateScreenDots("screen-opening");
+
+  function unlockScreen() {
+    lockMessage.textContent = "";
+    lockMessage.classList.remove("is-visible");
+    lockInput.value = "";
+    goToScreen("screen-opening");
+  }
+
+  lockPrompt.textContent = CONFIG.lock.prompt;
+  lockForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const enteredPasscode = lockInput.value.trim().toLowerCase();
+    const configuredPasscode = String(CONFIG.lock.passcode).trim().toLowerCase();
+
+    if (enteredPasscode === configuredPasscode) {
+      lockInput.disabled = true;
+      unlockScreen();
+      return;
+    }
+
+    lockMessage.textContent = CONFIG.lock.incorrectMessage;
+    lockMessage.classList.add("is-visible");
+    lockInput.select();
+  });
+
+  if (!CONFIG.lock.enabled) {
+    unlockScreen();
+  } else {
+    lockInput.focus();
+  }
 
   function setAudioForScreen(screenId) {
     const audioKey = {

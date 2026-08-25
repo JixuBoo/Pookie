@@ -33,12 +33,32 @@
   <audio id="audio-song2" preload="auto" loop></audio>
   <audio id="audio-song3" preload="auto" loop></audio>
 
+  <!-- ============================ SCREEN 0 — Optional Lock ============================ -->
+  <section class="screen lock-screen is-active" id="lock-screen" aria-labelledby="lock-prompt">
+    <form class="lock-inner" id="lock-form">
+      <p class="lock-prompt" id="lock-prompt">enter our special date ♡</p>
+      <label class="sr-only" for="lock-passcode">Passcode</label>
+      <input
+        class="lock-input"
+        id="lock-passcode"
+        name="passcode"
+        type="text"
+        inputmode="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        required
+      />
+      <p class="lock-message" id="lock-message" aria-live="polite"></p>
+    </form>
+  </section>
+
   <main id="app">
 
     <nav class="screen-dots" id="screen-dots" aria-label="Story screens"></nav>
 
     <!-- ============================ SCREEN 1 — Opening ============================ -->
-    <section class="screen is-active" id="screen-opening">
+    <section class="screen" id="screen-opening">
       <div class="screen-inner">
         <p class="reveal-text message-text" id="text-opening"></p>
         <button class="glow-button" id="btn-opening" type="button">show me ♡</button>
