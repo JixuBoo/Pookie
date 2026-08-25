@@ -97,6 +97,7 @@ const CONFIG = {
   // ---------------------------------------------------------------
   ending: {
     message: "I love you.",
+    replayText: "relive this ♡",
   },
 };
 
@@ -171,25 +172,28 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   function fadeAudio(audioEl, targetVolume, durationMs = 900, thenStop = false) {
-    if (!audioEl) return;
+    if (!audioEl) return Promise.resolve();
     const startVolume = audioEl.volume;
     const steps = 30;
     const stepTime = durationMs / steps;
     let step = 0;
 
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      audioEl.volume = startVolume + (targetVolume - startVolume) * progress;
-      if (step >= steps) {
-        clearInterval(timer);
-        audioEl.volume = targetVolume;
-        if (thenStop) {
-          audioEl.pause();
-          audioEl.currentTime = 0;
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        step++;
+        const progress = step / steps;
+        audioEl.volume = startVolume + (targetVolume - startVolume) * progress;
+        if (step >= steps) {
+          clearInterval(timer);
+          audioEl.volume = targetVolume;
+          if (thenStop) {
+            audioEl.pause();
+            audioEl.currentTime = 0;
+          }
+          resolve();
         }
-      }
-    }, stepTime);
+      }, stepTime);
+    });
   }
 
   function playAudio(audioEl, volume = 0.7) {
@@ -215,8 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function stopAudio(audioEl) {
-    if (!audioEl) return;
-    fadeAudio(audioEl, 0, 900, true);
+    return fadeAudio(audioEl, 0, 900, true);
   }
 
   /* ================================================================
@@ -502,6 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let screen5Started = false;
   let cakeClicked = false;
+  let cakeCelebrationTimeout = null;
 
   cakeHint.textContent = CONFIG.cake.hint;
   btnCakeContinue.textContent = CONFIG.cake.continueButtonText;
@@ -539,7 +543,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btnCake.classList.add("is-blown");
     spawnConfetti();
 
-    setTimeout(() => {
+    cakeCelebrationTimeout = setTimeout(() => {
+      cakeCelebrationTimeout = null;
       textCelebration.classList.add("is-visible");
       revealText(textCelebration, CONFIG.cake.celebrationMessage, () => {
         btnCakeContinue.classList.add("is-visible");
@@ -555,15 +560,79 @@ document.addEventListener("DOMContentLoaded", () => {
      SCREEN 6 — Final Ending
   ================================================================= */
   const textEnding = document.getElementById("text-ending");
+  const endingReplay = document.getElementById("ending-replay");
   let screen6Started = false;
+  let endingReplayTimeout = null;
+  const finalLineFadeMs = 2400;
+  const endingStillnessMs = 4500;
+
+  endingReplay.textContent = CONFIG.ending.replayText;
+
+  // Reset every piece of story state in memory before returning to the opening.
+  // Keep new screens and state variables in this checklist as the story grows.
+  async function resetStory() {
+    clearTimeout(endingReplayTimeout);
+    endingReplayTimeout = null;
+    clearTimeout(cakeCelebrationTimeout);
+    cakeCelebrationTimeout = null;
+    clearTimeout(memorySwapTimeout);
+    memorySwapTimeout = null;
+
+    stopMemorySpotlight();
+    currentMemoryIndex = 0;
+    screen2Started = false;
+    screen3Started = false;
+    screen5Started = false;
+    screen6Started = false;
+    cakeClicked = false;
+
+    cakeEl.classList.remove("is-blown");
+    btnCake.classList.remove("is-blown");
+    textCelebration.classList.remove("is-visible");
+    btnCakeContinue.classList.remove("is-visible");
+    confettiLayer.replaceChildren();
+
+    document.querySelectorAll(".reveal-text, button, .replay-link").forEach((element) => {
+      element.classList.remove("is-visible");
+    });
+    document.querySelectorAll(".reveal-text .word").forEach((word) => {
+      word.classList.remove("is-visible");
+    });
+    textEnding.classList.remove("is-visible");
+    endingReplay.classList.remove("is-visible");
+    textEnding.textContent = "";
+    textCelebration.textContent = "";
+    memoryPhotoWrap.classList.remove("is-visible", "is-exiting", "show-fallback");
+    memoryCaption.classList.remove("is-visible", "is-exiting");
+
+    await Promise.all([
+      stopAudio(audioEls.song3),
+      stopAudio(audioEls.song2),
+      stopAudio(audioEls.song1),
+    ]);
+    revealText(textOpening, CONFIG.screen1.message, () => {
+      btnOpening.classList.add("is-visible");
+    });
+  }
+
+  endingReplay.addEventListener("click", async (event) => {
+    event.preventDefault();
+    endingReplay.classList.remove("is-visible");
+    await resetStory();
+    goToScreen("screen-opening", { slow: true });
+  });
 
   function startScreen6() {
     if (screen6Started) return;
     screen6Started = true;
     textEnding.textContent = CONFIG.ending.message;
+    endingReplay.classList.remove("is-visible");
     playAudio(audioEls.song3, 0.7);
     requestAnimationFrame(() => {
       textEnding.classList.add("is-visible");
+      endingReplayTimeout = setTimeout(() => {
+        endingReplay.classList.add("is-visible");
+      }, finalLineFadeMs + endingStillnessMs);
     });
   }
 
