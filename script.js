@@ -172,6 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
     song3: document.getElementById("audio-song3"),
   };
 
+  Object.entries(audioEls).forEach(([song, audioEl]) => {
+    if (audioEl) audioEl.src = CONFIG.audio[song];
+  });
+
   const screenOrder = [
     "screen-opening", "screen-beginning", "screen-before-memories", "screen-gift",
     "screen-memories", "screen-always-here", "screen-cake", "screen-ending",
