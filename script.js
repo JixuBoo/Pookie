@@ -295,11 +295,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentMemoryIndex = 0;
 
+  // Photo tilt tuning: keep this effect gentle and let CSS ease it out.
+  const maxPhotoTilt = 6;
+  const mobileTiltIdleMs = 900;
+  const tiltReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let tiltFrame = null;
+  let tiltTarget = { x: 0, y: 0 };
+  let mobileTiltTimer = null;
+
+  function applyPhotoTilt() {
+    tiltFrame = null;
+    memoryPhoto.style.setProperty("--tilt-x", `${tiltTarget.x}deg`);
+    memoryPhoto.style.setProperty("--tilt-y", `${tiltTarget.y}deg`);
+    memoryPhoto.style.setProperty(
+      "--tilt-shadow",
+      `${-tiltTarget.y * 1.5}px ${10 + tiltTarget.x * 1.5}px 24px rgba(0, 0, 0, 0.32)`
+    );
+  }
+
+  function schedulePhotoTilt(x, y, resetAfterIdle = false) {
+    if (tiltReducedMotion) return;
+    tiltTarget = { x, y };
+    if (!tiltFrame) tiltFrame = requestAnimationFrame(applyPhotoTilt);
+
+    if (resetAfterIdle) {
+      clearTimeout(mobileTiltTimer);
+      mobileTiltTimer = setTimeout(resetPhotoTilt, mobileTiltIdleMs);
+    }
+  }
+
+  function resetPhotoTilt() {
+    clearTimeout(mobileTiltTimer);
+    if (tiltReducedMotion) return;
+    tiltTarget = { x: 0, y: 0 };
+    if (!tiltFrame) tiltFrame = requestAnimationFrame(applyPhotoTilt);
+  }
+
+  if (!tiltReducedMotion) {
+    function handleDesktopTilt(event) {
+      const bounds = memoryPhotoWrap.getBoundingClientRect();
+      const horizontal = (event.clientX - bounds.left) / bounds.width - 0.5;
+      const vertical = (event.clientY - bounds.top) / bounds.height - 0.5;
+      schedulePhotoTilt(-vertical * maxPhotoTilt, horizontal * maxPhotoTilt);
+    }
+
+    // mousemove covers desktop browsers that do not expose Pointer Events.
+    memoryPhotoWrap.addEventListener("mousemove", handleDesktopTilt);
+    memoryPhotoWrap.addEventListener("mouseleave", resetPhotoTilt);
+
+    // Browsers that already allow orientation events need no permission prompt.
+    window.addEventListener("deviceorientation", (event) => {
+      if (event.gamma === null || event.beta === null) return;
+      const x = Math.max(-maxPhotoTilt, Math.min(maxPhotoTilt, event.beta / 10));
+      const y = Math.max(-maxPhotoTilt, Math.min(maxPhotoTilt, event.gamma / 5));
+      schedulePhotoTilt(x, y, true);
+    }, { passive: true });
+  }
+
   function showMemory(index) {
     const memory = CONFIG.memories[index];
     if (!memory) return;
 
     // Reset animation state so it can fade in again cleanly.
+    resetPhotoTilt();
     memoryPhoto.classList.remove("is-visible");
     memoryCaption.classList.remove("is-visible");
     memoryPhotoWrap.classList.remove("show-fallback");

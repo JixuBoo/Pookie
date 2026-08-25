@@ -25,6 +25,7 @@
 
   /* ---- timing ---- */
   --fade-speed: 1.1s;
+  --photo-tilt-transition: 400ms; /* adjust photo tilt easing speed here */
 }
 
 * {
@@ -231,7 +232,7 @@ button {
   aspect-ratio: 1.45 / 1;
   min-width: 280px;
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   background: var(--plum);
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
 }
@@ -241,15 +242,19 @@ button {
   height: 100%;
   object-fit: contain;
   display: block;
+  border-radius: inherit;
   opacity: 0;
-  transform: scale(1.02);
-  transition: opacity 1.4s ease, transform 1.4s ease;
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1.02);
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow;
+  box-shadow: var(--tilt-shadow, 0 0 0 rgba(0, 0, 0, 0));
+  transition: opacity 1.4s ease, transform var(--photo-tilt-transition) ease-out, box-shadow var(--photo-tilt-transition) ease-out;
   background: rgba(17, 12, 18, 0.28);
 }
 
 .memory-photo.is-visible {
   opacity: 1;
-  transform: scale(1);
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) scale(1);
 }
 
 /* Shown automatically only if an image file is missing, so the page
@@ -532,5 +537,15 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.2s !important;
+  }
+
+  .memory-photo {
+    transform: scale(1.02) !important;
+    box-shadow: none !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  .memory-photo.is-visible {
+    transform: scale(1) !important;
   }
 }
