@@ -212,9 +212,36 @@ button {
 
 #screen-memories {
   padding: 6vh 5vw;
+  overflow: hidden;
+}
+
+/* Memory spotlight tuning: adjust size, color stops, and opacity here. */
+#memory-spotlight {
+  --spotlight-size: 420px;
+  --spotlight-gold-opacity: 0.08;
+  --spotlight-rose-opacity: 0.06;
+  position: absolute;
+  z-index: 0;
+  left: var(--spotlight-x, 50%);
+  top: var(--spotlight-y, 50%);
+  width: var(--spotlight-size);
+  height: var(--spotlight-size);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform;
+  background: radial-gradient(
+    circle,
+    rgba(217, 178, 108, var(--spotlight-gold-opacity)) 0%,
+    rgba(232, 173, 182, var(--spotlight-rose-opacity)) 34%,
+    rgba(232, 173, 182, 0) 72%
+  );
+  mix-blend-mode: screen;
 }
 
 .memories-inner {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   width: min(100%, 1200px);
   height: 100%;
@@ -343,6 +370,7 @@ button {
 
 .heart-next-button {
   position: absolute;
+  z-index: 2;
   left: 50%;
   bottom: 5vh;
   transform: translateX(-50%);
@@ -547,5 +575,13 @@ button {
 
   .memory-photo.is-visible {
     transform: scale(1) !important;
+  }
+
+  /* Keep the warmth present, but remove all spotlight movement. */
+  #memory-spotlight {
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0) !important;
+    will-change: auto;
   }
 }

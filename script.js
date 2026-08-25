@@ -280,6 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stopAudio(audioEls.song1);
     goToScreen("screen-memories");
     playAudio(audioEls.song2, 0.7);
+    startMemorySpotlight();
     showMemory(0);
   });
 
@@ -292,8 +293,75 @@ document.addEventListener("DOMContentLoaded", () => {
   const memoryCaption = document.getElementById("memory-caption");
   const memoryCount = document.getElementById("memory-count");
   const btnNextMemory = document.getElementById("btn-next-memory");
+  const memoryScreen = document.getElementById("screen-memories");
+  const memorySpotlight = document.getElementById("memory-spotlight");
 
   let currentMemoryIndex = 0;
+
+  // Spotlight tuning: lower this value for a slower, floatier cursor trail.
+  const spotlightFollowEase = 0.045;
+  const spotlightIdlePeriodMs = 18000;
+  const spotlightReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let spotlightFrame = null;
+  let spotlightStartedAt = 0;
+  let spotlightTouchActive = false;
+  let spotlightTarget = { x: 0.5, y: 0.5 };
+  let spotlightPosition = { x: 0.5, y: 0.5 };
+
+  function setSpotlightTarget(clientX, clientY) {
+    const bounds = memoryScreen.getBoundingClientRect();
+    spotlightTarget = {
+      x: Math.max(0, Math.min(1, (clientX - bounds.left) / bounds.width)),
+      y: Math.max(0, Math.min(1, (clientY - bounds.top) / bounds.height)),
+    };
+  }
+
+  function animateMemorySpotlight(timestamp) {
+    spotlightFrame = null;
+    if (!memoryScreen.classList.contains("is-active")) return;
+
+    if (!spotlightTouchActive && window.matchMedia("(pointer: coarse)").matches) {
+      const idleTime = timestamp - spotlightStartedAt;
+      spotlightTarget = {
+        x: 0.5 + Math.sin(idleTime / spotlightIdlePeriodMs * Math.PI * 2) * 0.25,
+        y: 0.5 + Math.sin(idleTime / spotlightIdlePeriodMs * Math.PI * 2 + Math.PI / 2) * 0.18,
+      };
+    }
+
+    spotlightPosition.x += (spotlightTarget.x - spotlightPosition.x) * spotlightFollowEase;
+    spotlightPosition.y += (spotlightTarget.y - spotlightPosition.y) * spotlightFollowEase;
+    memorySpotlight.style.setProperty("--spotlight-x", `${spotlightPosition.x * 100}%`);
+    memorySpotlight.style.setProperty("--spotlight-y", `${spotlightPosition.y * 100}%`);
+    spotlightFrame = requestAnimationFrame(animateMemorySpotlight);
+  }
+
+  function startMemorySpotlight() {
+    if (spotlightReducedMotion || spotlightFrame) return;
+    spotlightStartedAt = performance.now();
+    spotlightFrame = requestAnimationFrame(animateMemorySpotlight);
+  }
+
+  function stopMemorySpotlight() {
+    if (!spotlightFrame) return;
+    cancelAnimationFrame(spotlightFrame);
+    spotlightFrame = null;
+  }
+
+  if (!spotlightReducedMotion) {
+    memoryScreen.addEventListener("pointermove", (event) => {
+      spotlightTouchActive = event.pointerType === "touch";
+      setSpotlightTarget(event.clientX, event.clientY);
+    }, { passive: true });
+    memoryScreen.addEventListener("pointerup", (event) => {
+      if (event.pointerType === "touch") spotlightTouchActive = false;
+    }, { passive: true });
+    memoryScreen.addEventListener("pointercancel", () => {
+      spotlightTouchActive = false;
+    }, { passive: true });
+    memoryScreen.addEventListener("pointerleave", (event) => {
+      if (event.pointerType !== "touch") spotlightTarget = { x: 0.5, y: 0.5 };
+    }, { passive: true });
+  }
 
   // Photo tilt tuning: keep this effect gentle and let CSS ease it out.
   const maxPhotoTilt = 6;
@@ -391,6 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       // Final photo reached — a slightly slower, more emotional transition.
       stopAudio(audioEls.song2);
+      stopMemorySpotlight();
       goToScreen("screen-cake", { slow: true });
       startScreen5();
     }
