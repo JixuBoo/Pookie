@@ -158,6 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
       current.classList.remove("is-active");
     }
     next.classList.add("is-active");
+    updateScreenDots(id);
   }
 
   /* --------------------------------------------------------------
@@ -170,6 +171,113 @@ document.addEventListener("DOMContentLoaded", () => {
     song2: document.getElementById("audio-song2"),
     song3: document.getElementById("audio-song3"),
   };
+
+  const screenOrder = [
+    "screen-opening", "screen-beginning", "screen-before-memories", "screen-gift",
+    "screen-memories", "screen-always-here", "screen-cake", "screen-ending",
+  ];
+  const screenDots = document.getElementById("screen-dots");
+
+  screenOrder.forEach((screenId, index) => {
+    const dot = document.createElement("button");
+    dot.className = "screen-dot";
+    dot.type = "button";
+    dot.dataset.screen = screenId;
+    dot.setAttribute("aria-label", `Go to screen ${index + 1}`);
+    dot.addEventListener("click", () => jumpToScreen(screenId));
+    screenDots.appendChild(dot);
+  });
+
+  function updateScreenDots(activeId) {
+    screenDots.querySelectorAll(".screen-dot").forEach((dot) => {
+      const isActive = dot.dataset.screen === activeId;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-current", isActive ? "step" : "false");
+    });
+  }
+
+  updateScreenDots("screen-opening");
+
+  function setAudioForScreen(screenId) {
+    const audioKey = {
+      "screen-beginning": "song1",
+      "screen-before-memories": "song1",
+      "screen-gift": "song1",
+      "screen-memories": "song2",
+      "screen-ending": "song3",
+    }[screenId];
+
+    Object.values(audioEls).forEach((audioEl) => {
+      if (!audioEl) return;
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      audioEl.volume = 0;
+    });
+
+    if (audioKey) {
+      const destinationAudio = audioEls[audioKey];
+      destinationAudio.volume = 0.7;
+      const playPromise = destinationAudio.play();
+      if (playPromise) playPromise.catch(() => {});
+    }
+  }
+
+  function jumpToScreen(id) {
+    clearTimeout(memorySwapTimeout);
+    clearTimeout(cakeCelebrationTimeout);
+    clearTimeout(endingReplayTimeout);
+    setAudioForScreen(id);
+    stopMemorySpotlight();
+
+    if (id === "screen-opening") {
+      screen2Started = false;
+      screen3Started = false;
+      screen4Started = false;
+      screen6Started = false;
+      screen5Started = false;
+      endingStarted = false;
+      currentMemoryIndex = 0;
+      cakeClicked = false;
+      cakeEl.classList.remove("is-blown");
+      btnCake.classList.remove("is-blown");
+      textCelebration.textContent = "";
+      textCelebration.classList.remove("is-visible");
+      btnCakeContinue.classList.remove("is-visible");
+      confettiLayer.replaceChildren();
+      showTextInstant(textOpening, CONFIG.screen1.message);
+      btnOpening.classList.add("is-visible");
+    } else if (id === "screen-beginning") {
+      startScreen2(true);
+    } else if (id === "screen-before-memories") {
+      startScreen3(true);
+    } else if (id === "screen-gift") {
+      startScreen4(true);
+    } else if (id === "screen-memories") {
+      currentMemoryIndex = 0;
+      startMemorySpotlight();
+      showMemory(0, { instant: true });
+    } else if (id === "screen-always-here") {
+      startScreen6(true);
+    } else if (id === "screen-cake") {
+      cakeClicked = false;
+      cakeEl.classList.remove("is-blown");
+      btnCake.classList.remove("is-blown");
+      textCelebration.textContent = "";
+      textCelebration.classList.remove("is-visible");
+      btnCakeContinue.classList.remove("is-visible");
+      startScreen5(true);
+    } else if (id === "screen-ending") {
+      endingStarted = false;
+      startEnding(true);
+    }
+
+    goToScreen(id);
+  }
+
+  function showTextInstant(el, text) {
+    el.textContent = text;
+    el.classList.add("is-visible");
+  }
 
   function fadeAudio(audioEl, targetVolume, durationMs = 900, thenStop = false) {
     if (!audioEl) return Promise.resolve();
@@ -249,7 +357,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnBeginning.textContent = CONFIG.screen2.buttonText;
 
-  function startScreen2() {
+  function startScreen2(instant = false) {
+    if (instant) {
+      showTextInstant(textBeginning, CONFIG.screen2.message);
+      btnBeginning.classList.add("is-visible");
+      screen2Started = true;
+      return;
+    }
     if (screen2Started) return;
     screen2Started = true;
     revealText(textBeginning, CONFIG.screen2.message, () => {
@@ -271,7 +385,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnBeforeMemories.textContent = CONFIG.screen3.buttonText;
 
-  function startScreen3() {
+  function startScreen3(instant = false) {
+    if (instant) {
+      showTextInstant(textBeforeMemories, CONFIG.screen3.message);
+      btnBeforeMemories.classList.add("is-visible");
+      screen3Started = true;
+      return;
+    }
     if (screen3Started) return;
     screen3Started = true;
     revealText(textBeforeMemories, CONFIG.screen3.message, () => {
@@ -293,7 +413,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnGift.textContent = CONFIG.screen4.buttonText;
 
-  function startScreen4() {
+  function startScreen4(instant = false) {
+    if (instant) {
+      showTextInstant(textGift, CONFIG.screen4.message);
+      btnGift.classList.add("is-visible");
+      screen4Started = true;
+      return;
+    }
     if (screen4Started) return;
     screen4Started = true;
     revealText(textGift, CONFIG.screen4.message, () => {
@@ -451,9 +577,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ? 200
     : 1600;
 
-  function showMemory(index) {
+  function showMemory(index, options = {}) {
     const memory = CONFIG.memories[index];
     if (!memory) return;
+
+    if (options.instant) memoryPhotoWrap.classList.add("is-jump");
 
     // Start the outgoing dissolve: photo/caption shrink to 0.96x and blur by 4px.
     resetPhotoTilt();
@@ -490,7 +618,11 @@ document.addEventListener("DOMContentLoaded", () => {
         memoryPhotoWrap.classList.add("is-visible");
         memoryCaption.classList.add("is-visible");
       });
-    }, memorySwapDelay);
+    }, options.instant ? 0 : memorySwapDelay);
+
+    if (options.instant) {
+      requestAnimationFrame(() => memoryPhotoWrap.classList.remove("is-jump"));
+    }
   }
 
   // If a photo file hasn't been added yet, show a soft placeholder
@@ -523,7 +655,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnAlwaysHere.textContent = CONFIG.screen6.buttonText;
 
-  function startScreen6() {
+  function startScreen6(instant = false) {
+    if (instant) {
+      showTextInstant(textAlwaysHere, CONFIG.screen6.message);
+      btnAlwaysHere.classList.add("is-visible");
+      screen6Started = true;
+      return;
+    }
     if (screen6Started) return;
     screen6Started = true;
     revealText(textAlwaysHere, CONFIG.screen6.message, () => {
@@ -554,7 +692,11 @@ document.addEventListener("DOMContentLoaded", () => {
   cakeHint.textContent = CONFIG.cake.hint;
   btnCakeContinue.textContent = CONFIG.cake.continueButtonText;
 
-  function startScreen5() {
+  function startScreen5(instant = false) {
+    if (instant) {
+      showTextInstant(textCake, CONFIG.cake.message);
+      return;
+    }
     if (screen5Started) return;
     screen5Started = true;
     revealText(textCake, CONFIG.cake.message);
@@ -668,11 +810,16 @@ document.addEventListener("DOMContentLoaded", () => {
     goToScreen("screen-opening", { slow: true });
   });
 
-  function startEnding() {
+  function startEnding(instant = false) {
     if (endingStarted) return;
     endingStarted = true;
     textEnding.textContent = CONFIG.ending.message;
     endingReplay.classList.remove("is-visible");
+    if (instant) {
+      textEnding.classList.add("is-visible");
+      endingReplay.classList.add("is-visible");
+      return;
+    }
     playAudio(audioEls.song3, 0.7);
     requestAnimationFrame(() => {
       textEnding.classList.add("is-visible");
