@@ -29,7 +29,7 @@ const CONFIG = {
   audio: {
     song1: "audio/song1.mp3", // plays on Screen 1 ("show me ♡")
     song2: "audio/song2.mp3", // plays during the photo memories
-    song3: "audio/song3.wav", // plays on the final "I love you" screen
+    song3: "audio/song3.mp3", // plays on the final "I love you" screen
   },
 
   // ---------------------------------------------------------------
