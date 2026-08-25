@@ -173,7 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   Object.entries(audioEls).forEach(([song, audioEl]) => {
-    if (audioEl) audioEl.src = CONFIG.audio[song];
+    if (!audioEl) return;
+    audioEl.setAttribute("src", CONFIG.audio[song]);
+    audioEl.load();
   });
 
   const screenOrder = [
@@ -220,9 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (audioKey) {
       const destinationAudio = audioEls[audioKey];
-      destinationAudio.volume = 0.7;
-      const playPromise = destinationAudio.play();
-      if (playPromise) playPromise.catch(() => {});
+      playAudio(destinationAudio, 0.7);
     }
   }
 
@@ -581,6 +581,14 @@ document.addEventListener("DOMContentLoaded", () => {
     ? 200
     : 1600;
 
+  function preloadNextMemory(index) {
+    const nextMemory = CONFIG.memories[index + 1];
+    if (!nextMemory) return;
+
+    const nextPhoto = new Image();
+    nextPhoto.src = nextMemory.image;
+  }
+
   function showMemory(index, options = {}) {
     const memory = CONFIG.memories[index];
     if (!memory) return;
@@ -621,6 +629,7 @@ document.addEventListener("DOMContentLoaded", () => {
       requestAnimationFrame(() => {
         memoryPhotoWrap.classList.add("is-visible");
         memoryCaption.classList.add("is-visible");
+        preloadNextMemory(index);
       });
     }, options.instant ? 0 : memorySwapDelay);
 
