@@ -421,12 +421,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   }
 
+  let memorySwapTimeout;
+  const memorySwapDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ? 200
+    : 1600;
+
   function showMemory(index) {
     const memory = CONFIG.memories[index];
     if (!memory) return;
 
-    // Reset animation state so it can fade in again cleanly.
+    // Start the outgoing dissolve: photo/caption shrink to 0.96x and blur by 4px.
     resetPhotoTilt();
+    clearTimeout(memorySwapTimeout);
+    memoryPhotoWrap.classList.add("is-exiting");
+    memoryCaption.classList.add("is-exiting");
     memoryPhotoWrap.classList.remove("is-visible");
     memoryCaption.classList.remove("is-visible");
     memoryPhotoWrap.classList.remove("show-fallback");
@@ -442,9 +450,12 @@ document.addEventListener("DOMContentLoaded", () => {
       `${Math.sin(rotationRadians) * 7}px 14px 30px rgba(0, 0, 0, 0.44)`
     );
 
-    // Small delay lets the "old" image finish disappearing first,
-    // so photos never overlap.
-    setTimeout(() => {
+    // Wait for the dissolve to finish before swapping content. Reduced motion
+    // uses the matching 0.2s opacity-only handoff from the CSS media query.
+    // The single image element stays hidden during the swap, so photos never overlap.
+    memorySwapTimeout = setTimeout(() => {
+      memoryPhotoWrap.classList.remove("is-exiting");
+      memoryCaption.classList.remove("is-exiting");
       memoryPhoto.src = memory.image;
       memoryCaption.textContent = memory.caption;
       memoryPolaroidNote.textContent = memory.polaroidNote || "";
@@ -454,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
         memoryPhotoWrap.classList.add("is-visible");
         memoryCaption.classList.add("is-visible");
       });
-    }, 350);
+    }, memorySwapDelay);
   }
 
   // If a photo file hasn't been added yet, show a soft placeholder
