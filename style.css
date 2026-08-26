@@ -454,6 +454,76 @@ button {
   opacity: 1;
 }
 
+/* Hidden surprise: this overlay has no visible trigger in the story. */
+.easter-egg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(7, 5, 10, 0.78);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.easter-egg-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.easter-egg-panel {
+  position: relative;
+  width: min(100%, 30rem);
+  max-width: 30rem;
+  padding: 3rem 2rem 2rem;
+  border: 1px solid rgba(217, 178, 108, 0.45);
+  background: rgba(27, 18, 32, 0.96);
+  box-shadow: 0 0 34px rgba(232, 173, 182, 0.2);
+  text-align: center;
+  transform: translateY(12px);
+  transition: transform 0.6s ease;
+}
+
+.easter-egg-overlay.is-visible .easter-egg-panel {
+  transform: translateY(0);
+}
+
+.easter-egg-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.8rem;
+  color: var(--muted);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.easter-egg-close:hover,
+.easter-egg-close:focus-visible {
+  color: var(--ivory);
+  outline: none;
+}
+
+#easter-egg-image {
+  display: block;
+  width: 100%;
+  max-height: 18rem;
+  margin: 1.25rem auto 0;
+  object-fit: contain;
+}
+
+.easter-egg-message {
+  margin: 1.25rem 0 0;
+  color: var(--ivory);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
 .message-text {
   font-family: var(--font-elegant);
   font-style: italic;
@@ -972,5 +1042,10 @@ button {
   .relationship-counter.is-visible {
     opacity: 1;
     transition: none;
+  }
+
+  .easter-egg-overlay,
+  .easter-egg-panel {
+    transition-duration: 0.2s;
   }
 }

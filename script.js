@@ -125,6 +125,17 @@ const CONFIG = {
     message: "I love you.",
     replayText: "relive this ♡",
   },
+
+  // ---------------------------------------------------------------
+  // HIDDEN EASTER EGG
+  // Click the configured word in any revealed message to unlock it.
+  // Set image to "" if you want a message-only surprise.
+  // ---------------------------------------------------------------
+  easterEgg: {
+    targetWord: "moon",
+    message: "You found the little secret I tucked away for you. I love you to the moon and back ♡",
+    image: "",
+  },
 };
 
 
@@ -135,6 +146,44 @@ const CONFIG = {
    ===================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  const easterEggOverlay = document.getElementById("easter-egg-overlay");
+  const easterEggMessage = document.getElementById("easter-egg-message");
+  const easterEggImage = document.getElementById("easter-egg-image");
+  const easterEggClose = document.getElementById("easter-egg-close");
+  let easterEggFound = false;
+
+  function closeEasterEgg() {
+    easterEggOverlay.classList.remove("is-visible");
+    easterEggOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  function unlockEasterEgg() {
+    if (easterEggFound) return;
+    easterEggFound = true;
+    easterEggMessage.textContent = CONFIG.easterEgg.message;
+    if (CONFIG.easterEgg.image) {
+      easterEggImage.src = CONFIG.easterEgg.image;
+      easterEggImage.alt = "A little extra memory for you";
+      easterEggImage.hidden = false;
+    } else {
+      easterEggImage.hidden = true;
+    }
+    easterEggOverlay.classList.add("is-visible");
+    easterEggOverlay.setAttribute("aria-hidden", "false");
+  }
+
+  easterEggClose.addEventListener("click", closeEasterEgg);
+  easterEggOverlay.addEventListener("click", (event) => {
+    if (event.target === easterEggOverlay) closeEasterEgg();
+  });
+  document.addEventListener("click", (event) => {
+    const word = event.target.closest(".reveal-text .word");
+    if (!word) return;
+    const clickedWord = word.textContent.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+    const targetWord = String(CONFIG.easterEgg.targetWord).trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (clickedWord === targetWord) unlockEasterEgg();
+  });
 
   const lockForm = document.getElementById("lock-form");
   const lockPrompt = document.getElementById("lock-prompt");
