@@ -105,7 +105,7 @@ const CONFIG = {
 
  screen6: {
     message: "I'm always here, whenever you need me — even if we're mid-fight (khikhi). May this year, and every one after it, bring you all the success, love, joy, and comfort it possibly can. May you always be the happiest, healthiest, most loved person in this world. I love you sooo much, Jahan ♡",
-    buttonText: "♡",
+    buttonText: "Mwahh ♡",
   },
 
   // ---------------------------------------------------------------
