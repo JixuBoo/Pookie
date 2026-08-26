@@ -35,6 +35,8 @@ const CONFIG = {
     song1: "audio/song1.mp3", // plays on Screen 1 ("show me ♡")
     song2: "audio/song2.mp3", // plays during the photo memories
     song3: "audio/song3.mp3", // plays on the final "I love you" screen
+    // Add a short sound file here (a few seconds, not a full song) to play once when the candles are blown out.
+    chime: "audio/chime.mp3",
   },
 
   // ---------------------------------------------------------------
@@ -199,6 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
     song1: document.getElementById("audio-song1"),
     song2: document.getElementById("audio-song2"),
     song3: document.getElementById("audio-song3"),
+    chime: document.getElementById("audio-chime"),
   };
   const muteToggle = document.getElementById("mute-toggle");
   const audioTargetVolumes = new Map();
@@ -1034,6 +1037,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cakeEl.classList.add("is-blown");
     btnCake.classList.add("is-blown");
+    playAudio(audioEls.chime, 0.6);
     spawnConfetti();
 
     cakeCelebrationTimeout = setTimeout(() => {
