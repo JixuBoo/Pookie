@@ -70,6 +70,14 @@ const CONFIG = {
     buttonText: "I'm excited, let's goo ♡",
   },
 
+  // These are latitude/longitude coordinates. Search "my city latitude longitude" on Google to find your own.
+  distance: {
+    personA: { label: "Me", lat: 23.1818081, lng: 75.8017028 },
+    personB: { label: "You", lat: 23.026255, lng: 75.893441 },
+    introMessage: "However many kilometers apart, still this close.",
+    unit: "km",
+  },
+
   // ---------------------------------------------------------------
   // SCREEN 5 — Photo Memories
   // Add as many photos as you like! Just copy one of the lines
@@ -85,9 +93,9 @@ const CONFIG = {
     { image: "images/image3.jpg", caption: "The chemistry lab incident. I don't think I've ever been more stunned by fate's sense of mischief. I was so, so nervous.", polaroidNote: "another coincidence?" },
     { image: "images/image4.jpg", caption: "The day we played badminton for the first and last time. Remember how you just stood there, admiring me for a whole minute? I was blushing for a week straight ♡", polaroidNote: "a sweet match" },
     { image: "images/image5.jpg", caption: "Our last day at school. I remember you adoring me uss din bhi, under the sunlight, checking if I was okay. I watched you drive away in your van — the last time, though we didn't know it yet.", polaroidNote: "our last day at school" },
-    { image: "images/image6.jpg", caption: "We were so worried about what came next. But destiny had other plans — more moments, more years, all quietly waiting to make our love grow stronger.", polaroidNote: "destiny's plans" },
-    { image: "images/image7.jpg", caption: "Long meets, late-night calls, sweet texts in between. Somehow, we've lived more together than either of us ever imagined.", polaroidNote: "just us" },
-    { image: "images/image8.jpg", caption: "Dreams we thought would only ever stay dreams — checked off, one by one. Kisses. Hugs. Gifts. Love ♡", polaroidNote: "checked to-do list" },
+    { image: "images/image6.jpg", caption: "We were so worried about what came next. But destiny had other plans — more moments, more years, all quietly waiting to make our love grow stronger.", polaroidNote: "Mr. & Mrs. Perfect" },
+    { image: "images/image7.jpg", caption: "Long meets, late-night calls, sweet texts in between. Somehow, we've lived more together than either of us ever imagined.", polaroidNote: "wnh-keau-xmy" },
+    { image: "images/image8.jpg", caption: "Dreams we thought would only ever stay dreams — checked off, one by one. Kisses. Hugs. Gifts. Love ♡", polaroidNote: "my sunshine, your moon" },
     { image: "images/image9.jpg", caption: "But this isn't about us. Today is about YOU. Every memory here exists to show how much you've shaped these years of mine — how much love you've poured into making me who I am today. Your girl. Your lady. Your woman.", polaroidNote: "the moon looks lovely tonight, isn't it?" },
     { image: "images/image10.jpg", caption: "Destiny kept giving us more, just when we thought it couldn't get any better. I want us to keep believing in it — in us. My love for you could never fit inside a simple website, but I hope it's evident enough how special this day is for me. The day my man came into this world.", polaroidNote: "I love you!" },
     // { image: "images/image11.jpg", caption: "add more like this" },
@@ -258,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const screenOrder = [
-    "screen-opening", "screen-beginning", "screen-before-memories", "screen-gift",
+    "screen-opening", "screen-beginning", "screen-before-memories", "screen-distance", "screen-gift",
     "screen-memories", "screen-always-here", "screen-cake", "screen-ending",
   ];
   const screenDots = document.getElementById("screen-dots");
@@ -317,6 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const audioKey = {
       "screen-beginning": "song1",
       "screen-before-memories": "song1",
+      "screen-distance": "song1",
       "screen-gift": "song1",
       "screen-memories": "song2",
       "screen-ending": "song3",
@@ -346,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
       screen2Started = false;
       screen3Started = false;
       screen4Started = false;
+      distanceStarted = false;
       screen6Started = false;
       screen5Started = false;
       endingStarted = false;
@@ -363,6 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
       startScreen2(true);
     } else if (id === "screen-before-memories") {
       startScreen3(true);
+    } else if (id === "screen-distance") {
+      startDistance(true);
     } else if (id === "screen-gift") {
       startScreen4(true);
     } else if (id === "screen-memories") {
@@ -535,6 +547,87 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   btnBeforeMemories.addEventListener("click", () => {
+    goToScreen("screen-distance");
+    startDistance();
+  });
+
+  /* ================================================================
+     SCREEN 4 — The Distance Between Us
+  ================================================================= */
+  const textDistance = document.getElementById("text-distance");
+  const distanceMapEl = document.getElementById("distance-map");
+  const distanceLine = document.getElementById("distance-line");
+  const btnDistance = document.getElementById("btn-distance");
+  let distanceStarted = false;
+  let distanceMap = null;
+
+  function haversineDistance(pointA, pointB) {
+    const earthRadiusKm = 6371;
+    const toRadians = (degrees) => degrees * Math.PI / 180;
+    const latitudeDelta = toRadians(pointB.lat - pointA.lat);
+    const longitudeDelta = toRadians(pointB.lng - pointA.lng);
+    const a = Math.sin(latitudeDelta / 2) ** 2
+      + Math.cos(toRadians(pointA.lat)) * Math.cos(toRadians(pointB.lat))
+      * Math.sin(longitudeDelta / 2) ** 2;
+    return earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function formatDistance(distance, unit) {
+    const convertedDistance = unit === "mi" ? distance * 0.621371 : distance;
+    return `${Math.round(convertedDistance).toLocaleString("en-US")} ${unit}`;
+  }
+
+  function initializeDistanceMap() {
+    if (distanceMap || !window.L) return;
+
+    const { personA, personB } = CONFIG.distance;
+    distanceMap = L.map(distanceMapEl, { zoomControl: true, scrollWheelZoom: false });
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      maxZoom: 19,
+    }).addTo(distanceMap);
+
+    const markerIcon = (className) => L.divIcon({
+      className: `distance-marker ${className}`,
+      html: "<span></span>",
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+    L.marker([personA.lat, personA.lng], { icon: markerIcon("distance-marker-a") })
+      .addTo(distanceMap).bindTooltip(personA.label);
+    L.marker([personB.lat, personB.lng], { icon: markerIcon("distance-marker-b") })
+      .addTo(distanceMap).bindTooltip(personB.label);
+    L.polyline([[personA.lat, personA.lng], [personB.lat, personB.lng]], {
+      color: "#e8adb6",
+      dashArray: "5 9",
+      opacity: 0.7,
+      weight: 2,
+    }).addTo(distanceMap);
+    distanceMap.fitBounds([[personA.lat, personA.lng], [personB.lat, personB.lng]], { padding: [45, 45] });
+  }
+
+  function startDistance(instant = false) {
+    if (distanceStarted) {
+      if (distanceMap) distanceMap.invalidateSize();
+      return;
+    }
+    distanceStarted = true;
+    const distance = haversineDistance(CONFIG.distance.personA, CONFIG.distance.personB);
+    distanceLine.textContent = `${formatDistance(distance, CONFIG.distance.unit)} apart — but never far from my heart`;
+    initializeDistanceMap();
+    if (distanceMap) requestAnimationFrame(() => distanceMap.invalidateSize());
+
+    if (instant) {
+      showTextInstant(textDistance, CONFIG.distance.introMessage);
+      btnDistance.classList.add("is-visible");
+      return;
+    }
+    revealText(textDistance, CONFIG.distance.introMessage, () => {
+      btnDistance.classList.add("is-visible");
+    });
+  }
+
+  btnDistance.addEventListener("click", () => {
     goToScreen("screen-gift");
     startScreen4();
   });
