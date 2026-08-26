@@ -36,7 +36,7 @@ const CONFIG = {
   // SCREEN 1 — Opening
   // ---------------------------------------------------------------
   screen1: {
-    message: "Hey Baby! Happy Birthday 🍰♡ ༘*.ﾟ🧸🎀. In an attempt to show you how much you mean to me, here's a small gift for my birthday boy.",
+    message: "Hey Baby! Happy Birthday, my love ♡ ⋆｡°✩. Some things are too big for words, so I made this instead — a small gift for a heart that means everything to me.",
     buttonText: "show meeeee ♡",
   },
 
@@ -45,7 +45,7 @@ const CONFIG = {
   // ---------------------------------------------------------------
   screen2: {
     message:
-      "Our journey began at school, very dramatically. But it never had to end there, and here we are running 4 years strong, celebrating your 3rd birthday together.",
+      "Our story began at school, dramatically, the way the best ones do. It never had to end there — and here we are, four years deep in something that still feels like the beginning, celebrating your 3rd birthday together.",
     buttonText: "HuiHui ♡",
   },
 
@@ -53,7 +53,7 @@ const CONFIG = {
   // SCREEN 3 — The Love we Have
   // ---------------------------------------------------------------
   screen3: {
-    message: "I don't know if I express it enough, but you're the bestest person I've ever met in my life. A hardworking, loving, sweet, cute, responsible and mature man, who's always been there for me when I needed him, loved me the best he could, chased the moon for me giving me stars. You taught me love, you taught me patience, you taught me to be a better person. I love you a lott Jahan!♡",
+    message: "I don't know if I say this enough, but you are the best person I have ever known. Hardworking, loving, sweet, responsible, endlessly mature — a man who has always shown up for me, loved me as fully as he knew how, and chased the moon just to hand me the stars. You taught me love. You taught me patience. You taught me how to be better simply by being who you are. I love you so much, Jahan ♡",
     buttonText: "I love you ♡",
   },
 
@@ -61,7 +61,7 @@ const CONFIG = {
   // SCREEN 4 — Before the Memories
   // ---------------------------------------------------------------
   screen4: {
-    message: "I hope you like this chotu sa gift of mine. I put in the best of my efforts into this, even a smile would fulfill it's purpose. Picture the moments as you go by, treat this as a pre-anniversary gift too!",
+    message: "I hope you love this chotu sa gift of mine. I poured everything I had into it — even a single smile from you would make it worth every second. Let each moment carry you back as you go. Think of it as a little pre-anniversary gift too. But before I celebrate you, let me show you why.",
     buttonText: "I'm excited, let's goo ♡",
   },
 
@@ -75,21 +75,21 @@ const CONFIG = {
   // Put your photo files inside the "images" folder.
   // ---------------------------------------------------------------
   memories: [
-    { image: "images/image1.jpg", caption: "The day we first saw each other, though a snap but lives vivid and rentfree in my mind (I matched the clothes too huihui)", polaroidNote: "the beginning" },
-    { image: "images/image2.jpg", caption: "The computer lab coincidence. I can never get tired talking about it. Just like in a rom-com, you were there beside me while my heart thumped tirelessly.", polaroidNote: "a little coincidence" },
-    { image: "images/image3.jpg", caption: "The chemistry lab incident. I swear I could not be more stunned by such a mischievous alignment of spontaneity. I was soooo nervous!!!" },
-    { image: "images/image4.jpg", caption: "The day we played badminton for the first and last time. Remember how you stood there admiring for a minute? I was blushing thatt whole week ♡" },
-    { image: "images/image5.jpg", caption: "Our last day at school. I remember you adoring me uss din bhi, under the sunlight, checking if I was okay. I watched you go in your van, the last time." },
-    { image: "images/image6.jpg", caption: "We were soo worried about what next. But destiny had many more moments for us to live together, years planned to grow our love stronger." },
-    { image: "images/image7.jpg", caption: "Long meets, night calls, sweet texts. We've truly experienced more than we ever imagined." },
-    { image: "images/image8.jpg", caption: "Checked in boxes, we only thought could be made true dreams. Kiss, Hugs, Gifts, Love ♡" },
-    { image: "images/image9.jpg", caption: "But this isn't about us. Today is about YOU! All these memories are here to emphasize how much value you have added to all these years of mine. How much love you've showered on me to become the girl I am today. Your girl. Your lady. Your woman." },
-    { image: "images/image10.jpg", caption: "Destiny had the best for us when we thought it couldn't get any better. I want us to keep believing in it, in our love. My love for you can't be measured into this simple website but it should be evident enough how special this day is for me. The day my man came into this world." },
-    // { image: "images/image5.jpg", caption: "add more like this" },
+    { image: "images/image1.jpg", caption: "The day we first saw each other — just a snap in time, but it still lives vivid and rent-free in my mind (I matched the clothes too, huihui).", polaroidNote: "the beginning" },
+    { image: "images/image2.jpg", caption: "The computer lab coincidence. I could talk about it forever. Straight out of a rom-com — you, right beside me, while my heart refused to slow down.", polaroidNote: "a little coincidence" },
+    { image: "images/image3.jpg", caption: "The chemistry lab incident. I don't think I've ever been more stunned by fate's sense of mischief. I was so, so nervous.", polaroidNote: "another coincidence?" },
+    { image: "images/image4.jpg", caption: "The day we played badminton for the first and last time. Remember how you just stood there, admiring me for a whole minute? I was blushing for a week straight ♡", polaroidNote: "a sweet match" },
+    { image: "images/image5.jpg", caption: "Our last day at school. I remember you adoring me uss din bhi, under the sunlight, checking if I was okay. I watched you drive away in your van — the last time, though we didn't know it yet.", polaroidNote: "our last day at school" },
+    { image: "images/image6.jpg", caption: "We were so worried about what came next. But destiny had other plans — more moments, more years, all quietly waiting to make our love grow stronger.", polaroidNote: "destiny's plans" },
+    { image: "images/image7.jpg", caption: "Long meets, late-night calls, sweet texts in between. Somehow, we've lived more together than either of us ever imagined.", polaroidNote: "just us" },
+    { image: "images/image8.jpg", caption: "Dreams we thought would only ever stay dreams — checked off, one by one. Kisses. Hugs. Gifts. Love ♡", polaroidNote: "checked to-do list" },
+    { image: "images/image9.jpg", caption: "But this isn't about us. Today is about YOU. Every memory here exists to show how much you've shaped these years of mine — how much love you've poured into making me who I am today. Your girl. Your lady. Your woman.", polaroidNote: "the moon looks lovely tonight, isn't it?" },
+    { image: "images/image10.jpg", caption: "Destiny kept giving us more, just when we thought it couldn't get any better. I want us to keep believing in it — in us. My love for you could never fit inside a simple website, but I hope it's evident enough how special this day is for me. The day my man came into this world.", polaroidNote: "I love you!" },
+    // { image: "images/image11.jpg", caption: "add more like this" },
   ],
 
  screen6: {
-    message: "I'm always here whenever you'll need me. Regardless of if I am fighting you (khikhi). May this year and the upcoming ones, bring all the success, love, joy and comfort they can for you. May you always be the happiest, healthiest and the most loved person in this world. I love you a lotttttt Jahan! ♡",
+    message: "I'm always here, whenever you need me — even if we're mid-fight (khikhi). May this year, and every one after it, bring you all the success, love, joy, and comfort it possibly can. May you always be the happiest, healthiest, most loved person in this world. I love you sooo much, Jahan ♡",
     buttonText: "♡",
   },
 
@@ -97,9 +97,9 @@ const CONFIG = {
   // SCREEN 7 — Birthday Cake
   // ---------------------------------------------------------------
   cake: {
-    message: "Since I can't be there to celebrate with you, I made this cake for you. I hope you like it! Blow the candles and make a wish, my love. ♡",
+    message: "Since I can't be there to celebrate with you, I built you this cake instead — the best I could do from this distance. Blow out the candles and make a wish, my love ♡",
     hint: "tap the cake ♡",
-    celebrationMessage: "Happy Birthday, my love! ♡",
+    celebrationMessage: "Happy Birthday, my love! Every candle was lit for you ♡",
     continueButtonText: "Next? ♡",
   },
 
