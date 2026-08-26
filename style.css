@@ -348,6 +348,20 @@ button {
   font-style: italic;
 }
 
+.relationship-counter {
+  margin: -1.2rem 0 0;
+  color: var(--muted);
+  font-family: var(--font-elegant);
+  font-size: 0.95rem;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.relationship-counter.is-visible {
+  opacity: 1;
+}
+
 /* =====================================================================
    BUTTONS
    ===================================================================== */
@@ -841,5 +855,11 @@ button {
     top: 50%;
     transform: translate3d(-50%, -50%, 0) !important;
     will-change: auto;
+  }
+
+  .relationship-counter,
+  .relationship-counter.is-visible {
+    opacity: 1;
+    transition: none;
   }
 }

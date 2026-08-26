@@ -10,6 +10,11 @@
 
 const CONFIG = {
 
+  // Change this to the real date our relationship began.
+  relationshipStart: {
+    date: "2023-12-26", // YYYY-MM-DD
+  },
+
   // ---------------------------------------------------------------
   // OPTIONAL LOCK SCREEN
   // Set enabled to false whenever you want to skip Screen 0.
@@ -462,21 +467,41 @@ document.addEventListener("DOMContentLoaded", () => {
      SCREEN 2 — Our Beginning
   ================================================================= */
   const textBeginning = document.getElementById("text-beginning");
+  const relationshipCounter = document.getElementById("relationship-counter");
   const btnBeginning = document.getElementById("btn-beginning");
   let screen2Started = false;
 
   btnBeginning.textContent = CONFIG.screen2.buttonText;
 
+  function updateRelationshipCounter() {
+    const [startYear, startMonth, startDay] = CONFIG.relationshipStart.date.split("-").map(Number);
+    const today = new Date();
+    const todayDate = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+    let years = today.getFullYear() - startYear;
+    const anniversary = new Date(Date.UTC(today.getFullYear(), startMonth - 1, startDay));
+
+    if (todayDate < anniversary) years--;
+
+    const lastAnniversary = new Date(Date.UTC(today.getFullYear() - (todayDate < anniversary ? 1 : 0), startMonth - 1, startDay));
+    const days = Math.floor((todayDate - lastAnniversary) / 86400000);
+    relationshipCounter.textContent = `${years} years, ${days} days, and counting`;
+  }
+
   function startScreen2(instant = false) {
     if (instant) {
       showTextInstant(textBeginning, CONFIG.screen2.message);
+      updateRelationshipCounter();
+      relationshipCounter.classList.add("is-visible");
       btnBeginning.classList.add("is-visible");
       screen2Started = true;
       return;
     }
     if (screen2Started) return;
     screen2Started = true;
+    relationshipCounter.classList.remove("is-visible");
     revealText(textBeginning, CONFIG.screen2.message, () => {
+      updateRelationshipCounter();
+      relationshipCounter.classList.add("is-visible");
       btnBeginning.classList.add("is-visible");
     });
   }
