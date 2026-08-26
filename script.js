@@ -639,7 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateNumber(timestamp) {
       const progress = Math.min(1, (timestamp - startTime) / duration);
-      distanceNumber.textContent = formatDistance(distance * progress, unit).replace(` ${unit}`, "");
+      distanceNumber.textContent = formatDistance(distance * progress, unit).split(" ")[0];
       if (progress < 1) {
         requestAnimationFrame(updateNumber);
       } else if (onDone) {
@@ -728,7 +728,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     distanceStarted = true;
     const distance = haversineDistance(CONFIG.distance.personA, CONFIG.distance.personB);
-    distanceLine.innerHTML = '<span class="distance-number">0</span> <span>apart — but never far from my heart</span>';
+    distanceLine.innerHTML = `<span class="distance-number">0</span> <span class="distance-unit">${CONFIG.distance.unit}</span> <span>apart — but never far from my heart</span>`;
     initializeDistanceMap();
     if (distanceMap) {
       requestAnimationFrame(() => {
