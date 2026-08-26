@@ -560,6 +560,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnDistance = document.getElementById("btn-distance");
   let distanceStarted = false;
   let distanceMap = null;
+  let distanceMarkers = [];
+  let distancePath = null;
 
   function haversineDistance(pointA, pointB) {
     const earthRadiusKm = 6371;
@@ -575,6 +577,62 @@ document.addEventListener("DOMContentLoaded", () => {
   function formatDistance(distance, unit) {
     const convertedDistance = unit === "mi" ? distance * 0.621371 : distance;
     return `${Math.round(convertedDistance).toLocaleString("en-US")} ${unit}`;
+  }
+
+  // Count the displayed distance up from zero after the route has finished drawing.
+  function countUpDistance(distance, unit, onDone) {
+    const distanceNumber = distanceLine.querySelector(".distance-number");
+    const duration = 1300;
+    const startTime = performance.now();
+
+    function updateNumber(timestamp) {
+      const progress = Math.min(1, (timestamp - startTime) / duration);
+      distanceNumber.textContent = formatDistance(distance * progress, unit).replace(` ${unit}`, "");
+      if (progress < 1) {
+        requestAnimationFrame(updateNumber);
+      } else if (onDone) {
+        onDone();
+      }
+    }
+
+    requestAnimationFrame(updateNumber);
+  }
+
+  // Draw the SVG route after Leaflet has finished positioning both map points.
+  function animateDistancePath(distance) {
+    if (!distancePath) {
+      countUpDistance(distance, CONFIG.distance.unit);
+      return;
+    }
+
+    const pathElement = distancePath.getElement();
+    if (!pathElement || typeof pathElement.getTotalLength !== "function") {
+      countUpDistance(distance, CONFIG.distance.unit);
+      return;
+    }
+
+    const pathLength = pathElement.getTotalLength();
+    pathElement.style.strokeDasharray = `${pathLength} ${pathLength}`;
+    pathElement.style.strokeDashoffset = pathLength;
+    pathElement.style.transition = "none";
+
+    // Update every frame so Leaflet cannot interrupt the draw by resetting SVG styles.
+    const drawDuration = 1400;
+    const drawStartedAt = performance.now();
+    function drawFrame(timestamp) {
+      const progress = Math.min(1, (timestamp - drawStartedAt) / drawDuration);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      pathElement.style.strokeDashoffset = pathLength * (1 - easedProgress);
+      if (progress < 1) {
+        requestAnimationFrame(drawFrame);
+      } else {
+        pathElement.style.strokeDashoffset = "0";
+        pathElement.style.strokeDasharray = "5 9";
+        countUpDistance(distance, CONFIG.distance.unit);
+      }
+    }
+
+    requestAnimationFrame(drawFrame);
   }
 
   function initializeDistanceMap() {
@@ -593,11 +651,16 @@ document.addEventListener("DOMContentLoaded", () => {
       iconSize: [18, 18],
       iconAnchor: [9, 9],
     });
-    L.marker([personA.lat, personA.lng], { icon: markerIcon("distance-marker-a") })
+    // Add both markers hidden so they can enter one at a time after fitting the map.
+    const markerA = L.marker([personA.lat, personA.lng], { icon: markerIcon("distance-marker-a") })
       .addTo(distanceMap).bindTooltip(personA.label);
-    L.marker([personB.lat, personB.lng], { icon: markerIcon("distance-marker-b") })
+    const markerB = L.marker([personB.lat, personB.lng], { icon: markerIcon("distance-marker-b") })
       .addTo(distanceMap).bindTooltip(personB.label);
-    L.polyline([[personA.lat, personA.lng], [personB.lat, personB.lng]], {
+    distanceMarkers = [markerA, markerB];
+    distanceMarkers.forEach((marker) => marker.getElement()?.classList.remove("is-visible"));
+
+    // Keep the route hidden until its SVG path can be measured for the draw effect.
+    distancePath = L.polyline([[personA.lat, personA.lng], [personB.lat, personB.lng]], {
       color: "#e8adb6",
       dashArray: "5 9",
       opacity: 0.7,
@@ -613,9 +676,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     distanceStarted = true;
     const distance = haversineDistance(CONFIG.distance.personA, CONFIG.distance.personB);
-    distanceLine.textContent = `${formatDistance(distance, CONFIG.distance.unit)} apart — but never far from my heart`;
+    distanceLine.innerHTML = '<span class="distance-number">0</span> <span>apart — but never far from my heart</span>';
     initializeDistanceMap();
-    if (distanceMap) requestAnimationFrame(() => distanceMap.invalidateSize());
+    if (distanceMap) {
+      requestAnimationFrame(() => {
+        distanceMap.invalidateSize();
+        distanceMarkers[0]?.getElement()?.classList.add("is-visible");
+        setTimeout(() => distanceMarkers[1]?.getElement()?.classList.add("is-visible"), 350);
+        requestAnimationFrame(() => animateDistancePath(distance));
+      });
+    }
 
     if (instant) {
       showTextInstant(textDistance, CONFIG.distance.introMessage);
