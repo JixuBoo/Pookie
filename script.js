@@ -1129,6 +1129,7 @@ document.addEventListener("DOMContentLoaded", () => {
     screen2Started = false;
     screen3Started = false;
     screen4Started = false;
+    distanceStarted = false;
     screen6Started = false;
     screen5Started = false;
     endingStarted = false;
@@ -1150,6 +1151,14 @@ document.addEventListener("DOMContentLoaded", () => {
     endingReplay.classList.remove("is-visible");
     textEnding.textContent = "";
     textCelebration.textContent = "";
+    textDistance.classList.remove("is-visible");
+    btnDistance.classList.remove("is-visible");
+    distanceLine.textContent = "";
+    distanceMarkers.forEach((marker) => marker.getElement()?.classList.remove("is-visible"));
+    const distancePathElement = distancePath?.getElement();
+    distancePathElement?.style.removeProperty("stroke-dasharray");
+    distancePathElement?.style.removeProperty("stroke-dashoffset");
+    distancePathElement?.style.removeProperty("transition");
     memoryPhotoWrap.classList.remove("is-visible", "is-exiting", "show-fallback");
     memoryCaption.classList.remove("is-visible", "is-exiting");
 
