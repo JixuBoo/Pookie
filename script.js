@@ -74,8 +74,8 @@ const CONFIG = {
 
   // These are latitude/longitude coordinates. Search "my city latitude longitude" on Google to find your own.
   distance: {
-    personA: { label: "Me", lat: 23.1818081, lng: 75.8017028 },
-    personB: { label: "You", lat: 23.026255, lng: 75.893441 },
+    personA: { label: "Me", lat: 0.0, lng: 0.0 },
+    personB: { label: "You", lat: 0.0, lng: 0.0 },
     introMessage: "However many kilometers apart, still this close.",
     unit: "km",
   },
